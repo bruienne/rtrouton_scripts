@@ -34,4 +34,17 @@ ln -sf /System/Library/Java/Support/Deploy.bundle/Contents/Resources/JavaPlugin2
 
 ln -sf /System/Library/Frameworks/JavaVM.framework/Commands/javaws /usr/bin/javaws
 
+# Check to see if Xprotect is blocking our current JVM build and reenable if it is
+
+CURRENT_JAVA_BUILD=`/usr/libexec/PlistBuddy -c "print :JavaVM:JVMVersion" /Library/Java/Home/bundle/Info.plist`
+XPROTECT_JAVA_BUILD=`/usr/libexec/PlistBuddy -c "print :JavaWebComponentVersionMinimum" /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/XProtect.meta.plist`
+
+if [ ${CURRENT_JAVA_BUILD: -3} -lt ${XPROTECT_JAVA_BUILD: -3} ]; then
+
+     logger "Current JavaVM build (${CURRENT_JAVA_BUILD: -3}) is less than the minimum build required by Xprotect (${XPROTECT_JAVA_BUILD: -3}), reenabling."
+	defaults write /System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/XProtect.meta JavaWebComponentVersionMinimum -string "$CURRENT_JAVA_BUILD"
+else
+	logger "Current JVM build is ${CURRENT_JAVA_BUILD: -3} and Xprotect minimum build is ${XPROTECT_JAVA_BUILD: -3}, nothing to do here."
+fi
+
 exit 0
