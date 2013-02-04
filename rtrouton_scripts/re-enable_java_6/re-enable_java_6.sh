@@ -49,6 +49,6 @@ if [[ -e "$3/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/XPr
 		logger "Current JVM build is ${CURRENT_JAVA_BUILD: -3} and Xprotect minimum build is ${XPROTECT_JAVA_BUILD: -3}, nothing to do here."
 	fi
 else
-	logged "Xprotect not found, skipping."
+	logger "Xprotect not found, skipping."
 fi
 exit 0
